@@ -1,0 +1,22 @@
+The project goal was to find pairs of videos that are similar. We quantify similarity by using Jaccard similarity, and we consider two videos similar if their Jaccard similarity is higher or equal to 85%. For this purpose we used near-neighbours search algorithm that use Jaccard similarity as cost function. The algorithm is deployed in Map-Reduce environment. More specifically, our task was to implement mapper and reducer function.
+
+MAPPER FUNCTION: 
+We first generate a signature vector, by using H hash functions of the form ((A*x + B) % P) % M, where A is an integer denoting the position of the hash function in the list of all H hash functions, B=A+1, P is large prime number (we used P = 1000000007) and M is total number of shingles - M=8193. The form of the hash function was particularly chosen for it's simplicity, effectivness and fast calculation. The algorithm goes as follows: For each of the hash functions we search for the shingle that will generate the minimal hash value. These values represent the signature vector of each video.
+
+In order to boost our performance, we are rehashing the signature vector, by dividing it in b bands, each having r rows, where H = b*r. The best results were achieved with r=7 and b=40. The algorithm goes as follows: Each band is hashed independently and produces one hash value. By hashing a band we consider a sum of hash values of each row belonging to this band. Each row is hashed independently using the same set of hash functions from before. For each band, mapper function emits a pair (X, Y) where X represents a key and is a string of the form "P--Q", where P is band ID and Q is it's hash value, and Y represents a value and is a line describing the video. 
+
+REDUCER FUNCTION:
+We inspect every pair of elements associated to the certain key and calculate their Jaccard similarity
+
+
+SEND THE PROJECT!!!!!
+
+The project goal was to find pairs of videos that are similar. We used Locality Sensitive Hashing algorithm in Map reduce environment.
+
+MAPPER: 
+We first generate a signature vector, by using H hash functions of the form ((A*x + B) % P) % M, where A is an integer denoting the position of the hash function in the list of all H hash functions, B=A+1, P is large prime number (1000000007) and M is total number of shingles - M=8193. The form of the hash function was chosen for it's simplicity, effectiveness and fast calculation. Then, for each of the hash functions we search for the shingle that will generate the minimal hash value. These values represent the signature vector of each video.
+
+In order to boost our performance, we are rehashing the signature vector, by dividing it in b bands, each of r rows, where H = b*r. The best results were achieved with r=7 and b=40. Each band is hashed independently and produces one hash value. By hashing a band we consider a sum of hash values of each row. Each row is hashed using the same set of hash functions from before. For each band, mapper emits a pair (X, Y) where X is a string "P--Q", where P is band ID and Q is it's hash value, and Y is a line describing the video. 
+
+REDUCER:
+We inspect every pair of elements associated to the key and calculate their Jaccard similarity. We consider two videos similar if their Jaccard similarity is higher or equal to 85%. Reducer emits IDs of similar videos.

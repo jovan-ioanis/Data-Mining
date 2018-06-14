@@ -1,0 +1,8 @@
+The project goal was to cluster images into 200 different clusters in Map Reduce environment. We used hard kMeans algorithm.
+
+MAPPER:
+Mapper performs bicriterion approximation of optimal clustering by using Mahalanobis D^2 sampling, that here translates to Euclidean distance. In the beginning, data point is sampled uniformly at random and inserted into set of data-centers C. Then, iteratively, new data-center is sampled with probability p(x) that is proportional to minimal squared Euclidean distance between sampled point and already sampled data-centers from C. This way we obtain data-centers that (approximately) represent all existing clusters. Mapper performs M = 3999 iterations, in each sampling one data-center - total of 4000 data-centers. Mapper yields (key, value) pair (1, C)
+
+REDUCER:
+Reducer applies hard kMeans clustering algorithm on data-centers received from each of the mappers. Initial centroid values for kMeans algorithm are obtained by using Mahalanobis D^2 sampling, as described above, only now number of iterations is M = 199 (1 uniformly at random and rest 199 sampled from probability p(x)). This proved to perform with better accuracy compared to random centroid initialization. 
+Then, kMeans algorithm iteratively assigns each of data points to the closest centroid in terms of squared Euclidean distance and recomputes centroids as average of all data points assigned to it. KMeans runs for T = 150 iterations. Reducer yields list of centroid points.

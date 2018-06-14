@@ -1,0 +1,7 @@
+The project goal was to learn user preferences and policy for recommending new articles to a user. For this purpose we used contextual disjoint linear bandit algorithm - LinUCB, which captures exploration-exploitation dilemma.
+
+We want to estimate and exploit weight vector theta for each article. In each round, we are given context - user feature vector, and a set of chosen articles. If the set includes an article that hasn't yet been seen, we add it to the list of articles and force exploration - it's been recommended to the user. Otherwise, we calculate UCB score for each of the articles. UCB score for article a is given as dot product of weight vector theta[a] and user feature vector. We used optimistic approach in which upper bound of confidence region (corrected with parameter alpha) of the score is used - the article with highest UCB score is recommended to the user.
+
+In each round, a reward = {-1, 0, 1} is observed for chosen article. If reward equals to -1, it is ignored. Otherwise,we update weight vector accordingly. In order to penalize more incorrect recommendations, instead 0 and 1, we use R0 and R1 values respectively. Updating is done as discussed on the slides.
+
+In set_article method we initialize matrix A, its inverse, vector b and theta. Method recommend chooses an article and calculates UCB score. Method update is updating matrix A, its inverse, vector b and theta for chosen article. We used grid search for estimating parameters: alpha = 1, R0 = -5, R1 = 25.

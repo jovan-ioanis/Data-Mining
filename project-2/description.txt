@@ -1,0 +1,11 @@
+The project goal was to divide images into 2 categories. We used PEGASOS and ADAM algorithms combined in Map Reduce environment.
+
+MAPPER:
+Input data is transformed using Random Fourier Features with Normal distribution. The resulting vector has 2000 features, half of them obtained by applying sine and the other half by applying cosine function on the dot product of input data and randomly generated weight vector. This proved to perform with higher accuracy.
+
+Algorithm: The loss function used was hinge-loss, and it's sub-gradient as outlined in lecture slides. To increase accuracy, we used PEGASOS approach where subset of images is picked, the values of their gradients are summed up (each factor in the sum is either 0 or -target_value*feature_vector) and final gradient calculated as g = LAMBDA*weight_vector-sum_of_gradients. Subset is chosen by randomly picking batch of 10 consecutive images and LAMBDA=2.5e-10 is regularizer parameter. Then as in ADAM algorithm, we first update biased 1st and 2nd moment estimate, and then calculate bias-corrected 1st (M1) and 2nd (M2) moment estimate. In the final step we update weight vector by adding -step*M1/(precision + sqrt(M2)). The parameters for ADAM-part of the algorithm follow: Exponential decay 1 and 2 are both 0.94, precision is 1e-7, step is 1. Algorithm performs 15000 iterations, passing through each image 3 times on average.
+
+The mapper yields weight vector.
+
+REDUCER:
+The reducer function calculates average weight vector.

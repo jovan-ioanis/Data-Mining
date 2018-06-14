@@ -1,0 +1,3 @@
+https://github.com/Fengrui/HybridLinUCB-python/blob/master/policy_hybrid.py
+
+https://github.com/mcguire-steve/hybrid-linucb/blob/master/HybridLinUCB.py
